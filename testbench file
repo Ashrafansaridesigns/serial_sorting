@@ -1,0 +1,48 @@
+`timescale 1ns / 1ps
+
+module serial_sorting_tb();
+
+    reg clk;
+    reg reset;
+    reg [15:0] in;
+    wire [15:0] A_1, A_2, A_3, A_4, A_5, B_5;
+    serial_sortingv dut (
+        .in(in),
+        .reset(reset),
+        .clk(clk),
+        .A_1(A_1),
+        .A_2(A_2),
+        .A_3(A_3),
+        .A_4(A_4),
+        .A_5(A_5),
+        .B_5(B_5));
+
+    // Clock generation: 10ns clock period
+    always #5 clk = ~clk;
+
+    // Stimulus
+    initial begin
+        // Initialize
+        clk = 0;
+        reset = 1;
+        in = 16'd0;
+
+        // Apply reset
+        #10;
+        reset = 0;
+
+        // Send inputs one by one
+        in = 16'd13; #10;
+        in = 16'd26; #10;
+        in = 16'd53;  #10;
+        in = 16'd14; #10;
+        in = 16'd33; #10;
+        in = 16'd43; #10;
+        // Wait to let the system finish sorting
+        #150;
+
+        // End simulation
+        $finish;
+    end
+
+endmodule
